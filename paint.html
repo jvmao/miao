@@ -1,0 +1,127 @@
+
+<canvas width="1000" height="1000" style="image-rendering: pixelated;"></canvas>
+<script>
+  var canvas = document.querySelector('canvas')
+  canvas.style.imageRendering = 'pixelated'
+  var ctx = canvas.getContext('2d')
+
+  function dot(x, y, color = 'black') {
+    x = Math.round(x)
+    y = Math.round(y)
+    ctx.fillStyle = color
+    ctx.fillRect(x, y, 1, 1)
+  }
+
+  // 在 (42, 42) 画一个点
+  dot(42, 42, 'red')
+
+  // 水平线（y = 60）
+  for (let x = 10; x <= 200; x++) dot(x, 60)
+
+  // 垂直线（x = 100）
+  for (let y = 10; y <= 200; y++) dot(100, y)
+
+  // 1实1空虚线
+  for (let x = 10; x <= 200; x += 2) dot(x, 80)
+
+  // 2实2空虚线
+  for (let x = 10; x <= 200; x += 4) {
+    dot(x, 100)
+    dot(x + 1, 100)
+  }
+
+  // 3实2空虚线
+  for (let x = 10; x <= 200; x += 5) {
+    dot(x, 120)
+    dot(x + 1, 120)
+    dot(x + 2, 120)
+  }
+
+  // 45度斜线（y = x）
+  for (let x = 0; x <= 200; x++) dot(x, x + 150)
+
+  // 30度斜线（tan30 ≈ 0.577）
+  for (let x = 0; x <= 200; x++) {
+    let y = 200 + x * Math.tan(Math.PI / 6)
+    dot(x, y)
+  }
+
+  // 60度斜线
+  for (let x = 0; x <= 200; x++) {
+    let y = 250 + x * Math.tan(Math.PI / 3)
+    dot(x, y)
+  }
+
+  // 左上角到右下角的对角线
+  for (let x = 0; x < canvas.width; x++) {
+    let y = (x * canvas.height) / canvas.width
+    dot(x, y)
+  }
+
+  // 空心矩形
+  for (let x = 300; x <= 400; x++) dot(x, 50)
+  for (let x = 300; x <= 400; x++) dot(x, 150)
+  for (let y = 50; y <= 150; y++) dot(300, y)
+  for (let y = 50; y <= 150; y++) dot(400, y)
+
+  // 实心矩形
+  for (let x = 420; x <= 470; x++)
+    for (let y = 50; y <= 100; y++)
+      dot(x, y, 'gray')
+
+  // 空心圆（中心在画布中心）
+  let cx = canvas.width / 2, cy = canvas.height / 2
+  for (let r of [50, 200]) {
+    for (let t = 0; t < 2 * Math.PI; t += 0.01) {
+      let x = cx + r * Math.cos(t)
+      let y = cy + r * Math.sin(t)
+      dot(x, y, 'blue')
+    }
+  }
+
+  // 实心圆（半径100）
+  for (let r = 0; r <= 100; r++) {
+    for (let t = 0; t < 2 * Math.PI; t += 0.01) {
+      let x = cx + r * Math.cos(t)
+      let y = cy + r * Math.sin(t)
+      dot(x, y, 'lightblue')
+    }
+  }
+
+  // sin(x) 波形
+  for (let x = 0; x < 400; x++) {
+    let y = 300 + 50 * Math.sin(x * 0.05)
+    dot(x, y, 'green')
+  }
+
+  // 二阶贝塞尔曲线：p0, p1, p2
+  let p0 = [100, 350], p1 = [200, 250], p2 = [300, 350]
+  for (let t = 0; t <= 1; t += 0.001) {
+    let x = (1 - t) ** 2 * p0[0] + 2 * (1 - t) * t * p1[0] + t ** 2 * p2[0]
+    let y = (1 - t) ** 2 * p0[1] + 2 * (1 - t) * t * p1[1] + t ** 2 * p2[1]
+    dot(x, y, 'purple')
+  }
+
+  // 绘制 RGB 色彩空间的一个平面 (R,G 固定 B=128)
+  let startX = 450, startY = 180
+  for (let r = 0; r < 100; r++) {
+    for (let g = 0; g < 100; g++) {
+      let color = `rgb(${r * 2.55}, ${g * 2.55}, 128)`
+      dot(startX + r, startY + g, color)
+    }
+  }
+
+  // 线性变换 (简单旋转矩阵 * RGB 平面)
+  let matrix = [
+    [0.5, 0.87],
+    [-0.87, 0.5]
+  ]
+  for (let r = 0; r < 100; r++) {
+    for (let g = 0; g < 100; g++) {
+      let x = startX + matrix[0][0] * r + matrix[0][1] * g + 150
+      let y = startY + matrix[1][0] * r + matrix[1][1] * g + 150
+      let color = `rgb(${r * 2.55}, ${g * 2.55}, 128)`
+      dot(x, y, color)
+    }
+  }
+</script>
